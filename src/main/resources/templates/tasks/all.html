@@ -32,17 +32,17 @@
                 </thead>
                 <tbody>
                 <tr th:each="task: ${tasks}" class="white">
-                    <td><a th:href="@{/task/{id}(id=${task.id})}" th:text="${task.name}"/></td>
+                    <td><a th:href="@{/tasks/task/{id}(id=${task.id})}" th:text="${task.name}"/></td>
                     <td th:text="${task.created}"/>
                     <td th:text="${task.done} ? 'Да' : 'Нет'"/>
                 </tr>
                 </tbody>
             </table>
             <div class="row">
-                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/addTask}">Добавить</a></div>
+                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/tasks/add}">Добавить</a></div>
                 <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/tasks}">Все</a></div>
-                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/allDone}">Выполненные</a></div>
-                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/allNew}">Новые</a></div>
+                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/tasks/allDone}">Выполненные</a></div>
+                <div class="col-3"><a class="btn btn-primary w-100" th:href="@{/tasks/allNew}">Новые</a></div>
             </div>
         </div>
     </div>

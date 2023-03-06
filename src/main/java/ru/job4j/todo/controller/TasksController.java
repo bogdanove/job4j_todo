@@ -11,22 +11,23 @@ import ru.job4j.todo.service.TaskService;
 @ThreadSafe
 @Controller
 @AllArgsConstructor
+@RequestMapping("/tasks")
 public class TasksController {
 
     private TaskService taskService;
 
-    @GetMapping("/tasks")
+    @GetMapping()
     public String getTasks(Model model) {
         model.addAttribute("tasks", taskService.findAll());
-        return "tasks";
+        return "tasks/all";
     }
 
-    @GetMapping("/addTask")
+    @GetMapping("/add")
     public String formAddTask() {
-        return "addTask";
+        return "tasks/add";
     }
 
-    @PostMapping("/createTask")
+    @PostMapping("/create")
     public String createPost(@ModelAttribute Task task) {
         taskService.add(task);
         return "redirect:/tasks";
@@ -35,42 +36,59 @@ public class TasksController {
     @GetMapping("/allNew")
     public String getNewTasks(Model model) {
         model.addAttribute("tasks", taskService.findAllNew());
-        return "tasks";
+        return "tasks/all";
     }
 
     @GetMapping("/allDone")
     public String getDoneTasks(Model model) {
         model.addAttribute("tasks", taskService.findAllDone());
-        return "tasks";
+        return "tasks/all";
     }
 
     @GetMapping("/task/{id}")
     public String getOneTasks(Model model, @PathVariable int id) {
-        model.addAttribute("task", taskService.findById(id));
-        return "task";
+        var task = taskService.findById(id);
+        if (task.isEmpty()) {
+            model.addAttribute("message", "Произошла ошибка, задача не найдена");
+            return "errors/404";
+        }
+        model.addAttribute("task", task.get());
+        return "tasks/current";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable int id) {
-        taskService.delete(id);
+    public String deleteTask(Model model, @PathVariable int id) {
+        var result = taskService.delete(id);
+        if (!result) {
+            model.addAttribute("message", "Произошла ошибка, задача не удалена");
+            return "errors/404";
+        }
         return "redirect:/tasks";
     }
 
-    @GetMapping("/formUpdateTask/{id}")
+    @GetMapping("/formUpdate/{id}")
     public String formUpdateTask(Model model, @PathVariable int id) {
         model.addAttribute("task", taskService.findById(id));
-        return "formUpdateTask";
+        return "tasks/formUpdate";
     }
 
     @PostMapping("/update")
-    public String doneTask(@ModelAttribute Task task) {
-        taskService.replace(task);
+    public String doneTask(Model model, @ModelAttribute Task task) {
+        var result = taskService.replace(task);
+        if (!result) {
+            model.addAttribute("message", "Произошла ошибка, обновление не выполнено!");
+            return "errors/404";
+        }
         return "redirect:/tasks";
     }
 
     @GetMapping("/done/{id}")
-    public String doneTask(@PathVariable int id) {
-        taskService.done(id);
+    public String doneTask(Model model, @PathVariable int id) {
+        var result = taskService.done(id);
+        if (!result) {
+            model.addAttribute("message", "Произошла ошибка, завершение задачи не выполнено!");
+            return "errors/404";
+        }
         return "redirect:/tasks";
     }
 }

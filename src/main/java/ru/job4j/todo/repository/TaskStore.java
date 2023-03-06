@@ -6,9 +6,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -50,8 +50,7 @@ public class TaskStore {
         try {
             session.beginTransaction();
             tasks = session.createQuery(
-                            "from Task where created > :fMinusHour")
-                    .setParameter("fMinusHour", LocalDateTime.now().minusHours(1)).list();
+                    "from Task where done = false").list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -71,64 +70,73 @@ public class TaskStore {
         return task;
     }
 
-    public Task findById(int id) {
+    public Optional<Task> findById(int id) {
         Session session = sf.openSession();
-        Task item = new Task();
+        Optional task = Optional.empty();
         try {
             session.beginTransaction();
-            item = (Task) session.createQuery(
+            task = session.createQuery(
                             "from Task WHERE id = :fId")
-                    .setParameter("fId", id).uniqueResult();
+                    .setParameter("fId", id).uniqueResultOptional();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         }
-        return item;
+        return task;
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
         Session session = sf.openSession();
+        boolean result = false;
         try {
             session.beginTransaction();
             int count = session.createQuery(
                             "DELETE Task WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
+            result = count > 0;
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         }
+        return result;
     }
 
-    public void replace(Task task) {
+    public boolean replace(Task task) {
         Session session = sf.openSession();
+        boolean result = false;
         try {
             session.beginTransaction();
-            session.createQuery(
+            int count = session.createQuery(
                             "UPDATE Task SET name = :fName, description = :fDescription, done = :fDone WHERE id = :fId")
                     .setParameter("fName", task.getName())
                     .setParameter("fDescription", task.getDescription())
                     .setParameter("fDone", task.isDone())
                     .setParameter("fId", task.getId())
                     .executeUpdate();
+            result = count > 0;
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         }
+        return result;
     }
 
-    public void done(int id) {
+    public boolean done(int id) {
         Session session = sf.openSession();
+        boolean result = false;
         try {
             session.beginTransaction();
-            session.createQuery(
+            int count = session.createQuery(
                             "UPDATE Task SET done = true WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
+            result = count > 0;
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         }
+        return result;
     }
 }
 
