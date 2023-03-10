@@ -6,4 +6,6 @@ create table if not exists todo_user
     password  varchar        not null
 );
 
-ALTER TABLE tasks ADD COLUMN user_id int not null references todo_user(id) default 0;
+insert into todo_user (name, email, password) values ('Name', 'mail@mail.ru', 'qwerty');
+
+ALTER TABLE tasks ADD COLUMN user_id int not null references todo_user(id) default 1;
