@@ -3,7 +3,7 @@ CREATE TABLE if not exists tasks (
                        name varchar not null,
                        description TEXT,
                        created TIMESTAMP,
-                       done BOOLEAN,
+                       done BOOLEAN
 );
 
 
