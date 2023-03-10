@@ -41,6 +41,7 @@
                     <th>Имя</th>
                     <th>Дата создания</th>
                     <th>Выполнено</th>
+                    <th>Автор</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -48,6 +49,7 @@
                     <td><a th:href="@{/tasks/task/{id}(id=${task.id})}" th:text="${task.name}"/></td>
                     <td th:text="${task.created}"/>
                     <td th:text="${task.done} ? 'Да' : 'Нет'"/>
+                    <td th:text="${task.user.name}"/>
                 </tr>
                 </tbody>
             </table>
