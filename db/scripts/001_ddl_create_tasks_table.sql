@@ -4,10 +4,8 @@ CREATE TABLE if not exists tasks (
                        description TEXT,
                        created TIMESTAMP,
                        done BOOLEAN,
-                       user_id int not null references todo_user(id)
 );
 
-ALTER TABLE tasks ADD COLUMN user_id int not null references todo_user(id);
 
 insert into tasks (name, description, created, done)
  values ('Вынести мусор', 'Что бы на кухне не воняло, необходимо в кратчайшие сроки выкинуть мусор!', now(), false);
