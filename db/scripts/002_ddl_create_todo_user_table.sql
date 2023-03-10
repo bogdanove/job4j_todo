@@ -6,4 +6,4 @@ create table if not exists todo_user
     password  varchar        not null
 );
 
-ALTER TABLE tasks ADD COLUMN user_id int not null references todo_user(id);
+ALTER TABLE tasks ADD COLUMN user_id int not null references todo_user(id) default 0;
