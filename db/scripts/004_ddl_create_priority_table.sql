@@ -1,6 +1,6 @@
 CREATE TABLE priorities (
                             id SERIAL PRIMARY KEY,
-                            name TEXT UNIQUE NOT NULL,
+                            name varchar UNIQUE NOT NULL,
                             position int
 );
 
