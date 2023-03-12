@@ -15,15 +15,15 @@ public class TaskStore {
     private final CrudRepository repository;
 
     public List<Task> findAll() {
-        return repository.query("from Task", Task.class);
+        return repository.query("from Task t join fetch t.priority", Task.class);
     }
 
     public List<Task> findAllDone() {
-        return repository.query("from Task where done = true", Task.class);
+        return repository.query("from Task t join fetch t.priority where done = true", Task.class);
     }
 
     public List<Task> findAllNew() {
-        return repository.query("from Task where done = false", Task.class);
+        return repository.query("from Task t join fetch t.priority where done = false", Task.class);
     }
 
     public Task add(Task task) {
