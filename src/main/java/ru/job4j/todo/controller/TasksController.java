@@ -7,7 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
+import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
+
+import java.util.List;
 
 @ThreadSafe
 @Controller
@@ -16,6 +20,8 @@ import ru.job4j.todo.service.TaskService;
 public class TasksController {
 
     private TaskService taskService;
+    private CategoryService categoryService;
+    private PriorityService priorityService;
 
     @GetMapping()
     public String getTasks(Model model) {
@@ -24,13 +30,17 @@ public class TasksController {
     }
 
     @GetMapping("/add")
-    public String formAddTask() {
+    public String formAddTask(Model model) {
+        model.addAttribute("allCategories", categoryService.getAllCategory());
+        model.addAttribute("priorities", priorityService.getAll());
         return "tasks/add";
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute Task task, @SessionAttribute User user) {
+    public String createPost(@ModelAttribute Task task, @SessionAttribute User user, @RequestParam("categoryId") List<Integer> categoryId) {
         task.setUser(user);
+        task.setPriority(priorityService.findById(task.getPriority().getId()).get());
+        task.setCategories(categoryService.getAllByIds(categoryId));
         taskService.add(task);
         return "redirect:/tasks";
     }
